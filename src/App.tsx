@@ -10,6 +10,7 @@ import Inventory from "./pages/Inventory";
 import Credit from "./pages/Credit";
 import Reports from "./pages/Reports";
 import SettingsPage from "./pages/SettingsPage";
+import FastSale from "./pages/FastSale";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
+          <Route path="/fast-sale" element={<FastSale />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

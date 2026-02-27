@@ -8,12 +8,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Store,
+  Zap,
 } from "lucide-react";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/fast-sale", icon: Zap, label: "Fast Sale" },
   { to: "/sales", icon: ShoppingCart, label: "Sales" },
   { to: "/inventory", icon: Package, label: "Inventory" },
   { to: "/credit", icon: Users, label: "Credit" },
