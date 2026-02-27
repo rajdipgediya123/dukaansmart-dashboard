@@ -1,0 +1,74 @@
+// Mock data for DukaanSmart dashboard
+
+export const dashboardStats = {
+  todaySales: 12450,
+  todayProfit: 3200,
+  pendingCredit: 45600,
+  lowStockItems: 8,
+};
+
+export const salesLast7Days = [
+  { day: "Mon", sales: 8500 },
+  { day: "Tue", sales: 12300 },
+  { day: "Wed", sales: 9800 },
+  { day: "Thu", sales: 15200 },
+  { day: "Fri", sales: 11000 },
+  { day: "Sat", sales: 18500 },
+  { day: "Sun", sales: 7200 },
+];
+
+export const monthlyRevenue = [
+  { month: "Sep", revenue: 185000, profit: 42000 },
+  { month: "Oct", revenue: 210000, profit: 48000 },
+  { month: "Nov", revenue: 195000, profit: 45000 },
+  { month: "Dec", revenue: 260000, profit: 62000 },
+  { month: "Jan", revenue: 230000, profit: 55000 },
+  { month: "Feb", revenue: 245000, profit: 58000 },
+];
+
+export const topProducts = [
+  { name: "Tata Salt 1kg", category: "Grocery", sold: 120, revenue: 2400 },
+  { name: "Amul Butter 500g", category: "Dairy", sold: 85, revenue: 4250 },
+  { name: "Fortune Oil 1L", category: "Grocery", sold: 65, revenue: 9750 },
+  { name: "Parle-G Biscuit", category: "Snacks", sold: 200, revenue: 2000 },
+  { name: "Surf Excel 1kg", category: "Cleaning", sold: 45, revenue: 5850 },
+];
+
+export const inventoryItems = [
+  { id: "1", name: "Tata Salt 1kg", category: "Grocery", purchasePrice: 18, sellingPrice: 20, stock: 45, status: "In Stock" },
+  { id: "2", name: "Amul Butter 500g", category: "Dairy", purchasePrice: 42, sellingPrice: 50, stock: 12, status: "In Stock" },
+  { id: "3", name: "Fortune Oil 1L", category: "Grocery", purchasePrice: 130, sellingPrice: 150, stock: 3, status: "Low Stock" },
+  { id: "4", name: "Parle-G Biscuit", category: "Snacks", purchasePrice: 8, sellingPrice: 10, stock: 80, status: "In Stock" },
+  { id: "5", name: "Surf Excel 1kg", category: "Cleaning", purchasePrice: 110, sellingPrice: 130, stock: 2, status: "Low Stock" },
+  { id: "6", name: "Maggi Noodles", category: "Snacks", purchasePrice: 12, sellingPrice: 14, stock: 50, status: "In Stock" },
+  { id: "7", name: "Colgate 200g", category: "Personal Care", purchasePrice: 85, sellingPrice: 100, stock: 1, status: "Low Stock" },
+  { id: "8", name: "Dettol Soap", category: "Personal Care", purchasePrice: 35, sellingPrice: 42, stock: 25, status: "In Stock" },
+  { id: "9", name: "Brooke Bond Tea 250g", category: "Grocery", purchasePrice: 90, sellingPrice: 110, stock: 4, status: "Low Stock" },
+  { id: "10", name: "Vim Bar", category: "Cleaning", purchasePrice: 18, sellingPrice: 22, stock: 30, status: "In Stock" },
+];
+
+export const salesData = [
+  { id: "INV-001", date: "2026-02-27", customer: "Rajesh Patel", paymentType: "Cash", amount: 1250, status: "Completed" },
+  { id: "INV-002", date: "2026-02-27", customer: "Suresh Mehta", paymentType: "UPI", amount: 860, status: "Completed" },
+  { id: "INV-003", date: "2026-02-27", customer: "Priya Shah", paymentType: "Credit", amount: 2100, status: "Pending" },
+  { id: "INV-004", date: "2026-02-26", customer: "Walk-in Customer", paymentType: "Cash", amount: 450, status: "Completed" },
+  { id: "INV-005", date: "2026-02-26", customer: "Amit Desai", paymentType: "UPI", amount: 3200, status: "Completed" },
+  { id: "INV-006", date: "2026-02-26", customer: "Neha Joshi", paymentType: "Credit", amount: 1800, status: "Pending" },
+  { id: "INV-007", date: "2026-02-25", customer: "Kiran Sharma", paymentType: "Cash", amount: 920, status: "Completed" },
+  { id: "INV-008", date: "2026-02-25", customer: "Meena Patel", paymentType: "UPI", amount: 1560, status: "Completed" },
+];
+
+export const creditCustomers = [
+  { id: "1", name: "Priya Shah", phone: "98765 43210", pending: 8500, dueDate: "2026-03-05", status: "Overdue" },
+  { id: "2", name: "Neha Joshi", phone: "98765 12345", pending: 4200, dueDate: "2026-03-10", status: "Due Soon" },
+  { id: "3", name: "Rajesh Kumar", phone: "91234 56789", pending: 12000, dueDate: "2026-03-15", status: "Normal" },
+  { id: "4", name: "Suresh Mehta", phone: "99887 76543", pending: 3500, dueDate: "2026-02-28", status: "Overdue" },
+  { id: "5", name: "Amit Desai", phone: "97654 32100", pending: 6800, dueDate: "2026-03-20", status: "Normal" },
+  { id: "6", name: "Kavita Patel", phone: "98123 45678", pending: 10600, dueDate: "2026-03-02", status: "Due Soon" },
+];
+
+export const categories = ["Grocery", "Dairy", "Snacks", "Cleaning", "Personal Care", "Beverages", "Stationery"];
+
+export const formatCurrency = (amount: number) => {
+  return `₹${amount.toLocaleString("en-IN")}`;
+};
