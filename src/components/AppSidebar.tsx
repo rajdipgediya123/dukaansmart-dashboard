@@ -9,17 +9,26 @@ import {
   ChevronRight,
   Store,
   Zap,
+  BoxesIcon,
+  LogOut,
 } from "lucide-react";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
-const navItems = [
+const shopkeeperNav = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/fast-sale", icon: Zap, label: "Fast Sale" },
   { to: "/sales", icon: ShoppingCart, label: "Sales" },
+  { to: "/products", icon: BoxesIcon, label: "Products" },
   { to: "/inventory", icon: Package, label: "Inventory" },
   { to: "/credit", icon: Users, label: "Credit" },
   { to: "/reports", icon: BarChart3, label: "Reports" },
+  { to: "/settings", icon: Settings, label: "Settings" },
+];
+
+const adminNav = [
+  { to: "/", icon: LayoutDashboard, label: "All Shops" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
 
@@ -29,6 +38,9 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
+  const { isSuperAdmin, shop, logout } = useAuth();
+  const navItems = isSuperAdmin ? adminNav : shopkeeperNav;
+
   return (
     <aside
       className={cn(
@@ -40,9 +52,21 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
       <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4">
         <Store className="h-7 w-7 shrink-0 text-sidebar-primary" />
         {!collapsed && (
-          <span className="text-lg font-bold text-sidebar-primary-foreground">
-            DukaanSmart
-          </span>
+          <div className="min-w-0">
+            <span className="block text-lg font-bold text-sidebar-primary-foreground leading-tight">
+              DukaanSmart
+            </span>
+            {shop && (
+              <span className="block text-[10px] text-sidebar-foreground truncate">
+                {shop.shop_name}
+              </span>
+            )}
+            {isSuperAdmin && (
+              <span className="block text-[10px] text-sidebar-primary truncate">
+                Super Admin
+              </span>
+            )}
+          </div>
         )}
       </div>
 
@@ -52,6 +76,15 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           <SidebarNavItem key={item.to} {...item} collapsed={collapsed} />
         ))}
       </nav>
+
+      {/* Logout */}
+      <button
+        onClick={logout}
+        className="flex h-10 items-center gap-2 border-t border-sidebar-border px-4 text-sidebar-foreground hover:text-destructive transition-colors text-sm"
+      >
+        <LogOut className="h-4 w-4 shrink-0" />
+        {!collapsed && <span>Logout</span>}
+      </button>
 
       {/* Collapse toggle */}
       <button
