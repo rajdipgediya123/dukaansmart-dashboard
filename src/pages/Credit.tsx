@@ -14,6 +14,12 @@ const statusColor = (status: string) => {
   return "secondary" as const;
 };
 
+const riskBadge = (risk: "green" | "yellow" | "red") => {
+  if (risk === "green") return <Badge className="bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]">🟢 Good</Badge>;
+  if (risk === "yellow") return <Badge className="bg-[hsl(var(--warning))] text-[hsl(var(--warning-foreground))]">🟡 Risky</Badge>;
+  return <Badge variant="destructive">🔴 Bad</Badge>;
+};
+
 const Credit = () => {
   const [search, setSearch] = useState("");
 
@@ -50,6 +56,8 @@ const Credit = () => {
                 <TableHead className="text-right">Pending Amount</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Risk</TableHead>
+                <TableHead>History</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -62,6 +70,12 @@ const Credit = () => {
                   <TableCell className="text-muted-foreground">{customer.dueDate}</TableCell>
                   <TableCell>
                     <Badge variant={statusColor(customer.status)}>{customer.status}</Badge>
+                  </TableCell>
+                  <TableCell>{riskBadge(customer.riskScore)}</TableCell>
+                  <TableCell>
+                    <span className="text-xs text-muted-foreground">
+                      ✅{customer.onTimeCount} ❌{customer.lateCount} / {customer.totalTransactions}
+                    </span>
                   </TableCell>
                   <TableCell className="text-right">
                     <Button

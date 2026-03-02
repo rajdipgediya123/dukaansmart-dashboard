@@ -254,6 +254,23 @@ const ShopProducts = () => {
                 <Input type="number" value={form.selling_price} onChange={(e) => setForm({ ...form, selling_price: +e.target.value })} />
               </div>
             </div>
+            {/* Margin Calculator */}
+            {form.purchase_price > 0 && form.selling_price > 0 && (
+              <div className="rounded-lg border-2 border-[hsl(var(--success))]/30 bg-[hsl(var(--success))]/5 p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Profit per item:</span>
+                  <span className="text-lg font-bold text-[hsl(var(--success))]">
+                    {formatCurrency(form.selling_price - form.purchase_price)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Margin:</span>
+                  <span className="text-lg font-bold text-[hsl(var(--success))]">
+                    {((form.selling_price - form.purchase_price) / form.purchase_price * 100).toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-3 gap-4">
               <div className="grid gap-2">
                 <Label>Stock Qty</Label>

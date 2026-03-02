@@ -59,12 +59,12 @@ export const salesData = [
 ];
 
 export const creditCustomers = [
-  { id: "1", name: "Priya Shah", phone: "98765 43210", pending: 8500, dueDate: "2026-03-05", status: "Overdue" },
-  { id: "2", name: "Neha Joshi", phone: "98765 12345", pending: 4200, dueDate: "2026-03-10", status: "Due Soon" },
-  { id: "3", name: "Rajesh Kumar", phone: "91234 56789", pending: 12000, dueDate: "2026-03-15", status: "Normal" },
-  { id: "4", name: "Suresh Mehta", phone: "99887 76543", pending: 3500, dueDate: "2026-02-28", status: "Overdue" },
-  { id: "5", name: "Amit Desai", phone: "97654 32100", pending: 6800, dueDate: "2026-03-20", status: "Normal" },
-  { id: "6", name: "Kavita Patel", phone: "98123 45678", pending: 10600, dueDate: "2026-03-02", status: "Due Soon" },
+  { id: "1", name: "Priya Shah", phone: "98765 43210", pending: 8500, dueDate: "2026-03-05", status: "Overdue", riskScore: "red" as const, onTimeCount: 2, lateCount: 5, totalTransactions: 7 },
+  { id: "2", name: "Neha Joshi", phone: "98765 12345", pending: 4200, dueDate: "2026-03-10", status: "Due Soon", riskScore: "yellow" as const, onTimeCount: 6, lateCount: 3, totalTransactions: 9 },
+  { id: "3", name: "Rajesh Kumar", phone: "91234 56789", pending: 12000, dueDate: "2026-03-15", status: "Normal", riskScore: "green" as const, onTimeCount: 10, lateCount: 1, totalTransactions: 11 },
+  { id: "4", name: "Suresh Mehta", phone: "99887 76543", pending: 3500, dueDate: "2026-02-28", status: "Overdue", riskScore: "red" as const, onTimeCount: 3, lateCount: 8, totalTransactions: 11 },
+  { id: "5", name: "Amit Desai", phone: "97654 32100", pending: 6800, dueDate: "2026-03-20", status: "Normal", riskScore: "green" as const, onTimeCount: 12, lateCount: 0, totalTransactions: 12 },
+  { id: "6", name: "Kavita Patel", phone: "98123 45678", pending: 10600, dueDate: "2026-03-02", status: "Due Soon", riskScore: "yellow" as const, onTimeCount: 5, lateCount: 4, totalTransactions: 9 },
 ];
 
 export const categories = ["Grocery", "Dairy", "Snacks", "Cleaning", "Personal Care", "Beverages", "Stationery"];
@@ -72,3 +72,43 @@ export const categories = ["Grocery", "Dairy", "Snacks", "Cleaning", "Personal C
 export const formatCurrency = (amount: number) => {
   return `₹${amount.toLocaleString("en-IN")}`;
 };
+
+// Expense data
+export interface Expense {
+  id: string;
+  name: string;
+  amount: number;
+  category: string;
+  date: string;
+}
+
+export const expenseCategories = ["Rent", "Electricity", "Salary", "Transport", "Other"];
+
+export const expensesData: Expense[] = [
+  { id: "e1", name: "Shop Rent", amount: 15000, category: "Rent", date: "2026-03-01" },
+  { id: "e2", name: "Electricity Bill", amount: 3200, category: "Electricity", date: "2026-02-28" },
+  { id: "e3", name: "Helper Salary", amount: 8000, category: "Salary", date: "2026-03-01" },
+  { id: "e4", name: "Goods Transport", amount: 1500, category: "Transport", date: "2026-02-27" },
+  { id: "e5", name: "Packaging Material", amount: 800, category: "Other", date: "2026-02-26" },
+];
+
+// Daily summary data
+export const dailySummary = {
+  totalSales: 12450,
+  totalProfit: 3200,
+  creditGiven: 3900,
+  cashReceived: 5750,
+  upiReceived: 2800,
+  pendingCollection: 45600,
+  totalExpenses: 28500,
+  realProfit: 3200 - 950, // daily share of expenses
+};
+
+// Low stock items with reorder suggestions
+export const lowStockAlerts = inventoryItems
+  .filter((i) => i.status === "Low Stock")
+  .map((item) => ({
+    ...item,
+    avgDailySales: Math.ceil(Math.random() * 5 + 2),
+    suggestedReorder: Math.ceil(Math.random() * 20 + 10),
+  }));

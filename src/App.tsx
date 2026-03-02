@@ -16,6 +16,8 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import ShopProducts from "./pages/ShopProducts";
+import DailySummary from "./pages/DailySummary";
+import Expenses from "./pages/Expenses";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,8 @@ function AppRoutes() {
         <Route path="/products" element={<ShopProducts />} />
         <Route path="/credit" element={<Credit />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/daily-summary" element={<DailySummary />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="/fast-sale" element={<FastSale />} />
