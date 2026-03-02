@@ -1,23 +1,27 @@
-import { IndianRupee, TrendingUp, AlertTriangle, CreditCard, Plus, Package, Users, BarChart3 } from "lucide-react";
+import { IndianRupee, TrendingUp, AlertTriangle, CreditCard, Plus, Package, Users, BarChart3, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { dashboardStats, salesLast7Days, monthlyRevenue, topProducts, formatCurrency } from "@/lib/mockData";
+import { dashboardStats, salesLast7Days, monthlyRevenue, topProducts, lowStockAlerts, expensesData, formatCurrency } from "@/lib/mockData";
 import { useNavigate } from "react-router-dom";
+
+const totalExpenses = expensesData.reduce((s, e) => s + e.amount, 0);
+const realProfit = dashboardStats.todayProfit - Math.round(totalExpenses / 30);
 
 const statCards = [
   { title: "Today's Sales", value: formatCurrency(dashboardStats.todaySales), icon: IndianRupee, color: "text-primary" },
-  { title: "Today's Profit", value: formatCurrency(dashboardStats.todayProfit), icon: TrendingUp, color: "text-success" },
-  { title: "Pending Credit", value: formatCurrency(dashboardStats.pendingCredit), icon: CreditCard, color: "text-warning" },
+  { title: "Real Profit", value: formatCurrency(realProfit), icon: TrendingUp, color: "text-[hsl(var(--success))]", highlight: true },
+  { title: "Pending Credit", value: formatCurrency(dashboardStats.pendingCredit), icon: CreditCard, color: "text-[hsl(var(--warning))]" },
   { title: "Low Stock Items", value: String(dashboardStats.lowStockItems), icon: AlertTriangle, color: "text-destructive" },
 ];
 
 const quickActions = [
-  { label: "Add Sale", icon: Plus, path: "/sales", variant: "default" as const },
-  { label: "Add Product", icon: Package, path: "/inventory", variant: "outline" as const },
-  { label: "Add Customer", icon: Users, path: "/credit", variant: "outline" as const },
-  { label: "View Reports", icon: BarChart3, path: "/reports", variant: "outline" as const },
+  { label: "⚡ Fast Sale", icon: Zap, path: "/fast-sale", variant: "default" as const },
+  { label: "Add Sale", icon: Plus, path: "/sales", variant: "outline" as const },
+  { label: "Products", icon: Package, path: "/products", variant: "outline" as const },
+  { label: "Reports", icon: BarChart3, path: "/reports", variant: "outline" as const },
 ];
 
 const Dashboard = () => {
@@ -28,7 +32,7 @@ const Dashboard = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className={stat.highlight ? "border-2 border-[hsl(var(--success))]" : ""}>
             <CardContent className="flex items-center gap-4 p-5">
               <div className={`rounded-lg bg-accent p-3 ${stat.color}`}>
                 <stat.icon className="h-6 w-6" />
@@ -42,6 +46,34 @@ const Dashboard = () => {
         ))}
       </div>
 
+      {/* Low Stock Alerts */}
+      {lowStockAlerts.length > 0 && (
+        <Card className="border-destructive/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Low Stock Alerts
+              <Badge variant="destructive">{lowStockAlerts.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {lowStockAlerts.map((item) => (
+                <div key={item.id} className="flex items-center justify-between rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+                  <div>
+                    <p className="text-sm font-semibold">{item.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Stock: <span className="text-destructive font-bold">{item.stock}</span> • Reorder: {item.suggestedReorder}
+                    </p>
+                  </div>
+                  <Badge variant="destructive" className="shrink-0">{item.stock} left</Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
@@ -54,10 +86,7 @@ const Dashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
                 <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }}
-                  formatter={(value: number) => [formatCurrency(value), "Sales"]}
-                />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }} formatter={(value: number) => [formatCurrency(value), "Sales"]} />
                 <Bar dataKey="sales" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -74,10 +103,7 @@ const Dashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
                 <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }}
-                  formatter={(value: number) => formatCurrency(value)}
-                />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }} formatter={(value: number) => formatCurrency(value)} />
                 <Area type="monotone" dataKey="revenue" fill="hsl(var(--primary) / 0.15)" stroke="hsl(var(--primary))" strokeWidth={2} />
                 <Area type="monotone" dataKey="profit" fill="hsl(var(--success) / 0.15)" stroke="hsl(var(--success))" strokeWidth={2} />
               </AreaChart>
@@ -94,12 +120,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-3">
             {quickActions.map((action) => (
-              <Button
-                key={action.label}
-                variant={action.variant}
-                className="h-auto flex-col gap-2 py-4"
-                onClick={() => navigate(action.path)}
-              >
+              <Button key={action.label} variant={action.variant} className="h-auto flex-col gap-2 py-4" onClick={() => navigate(action.path)}>
                 <action.icon className="h-5 w-5" />
                 <span className="text-xs">{action.label}</span>
               </Button>

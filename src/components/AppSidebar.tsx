@@ -11,6 +11,8 @@ import {
   Zap,
   BoxesIcon,
   LogOut,
+  Wallet,
+  ClipboardList,
 } from "lucide-react";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { cn } from "@/lib/utils";
@@ -18,11 +20,13 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const shopkeeperNav = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/fast-sale", icon: Zap, label: "Fast Sale" },
+  { to: "/fast-sale", icon: Zap, label: "⚡ Fast Sale" },
   { to: "/sales", icon: ShoppingCart, label: "Sales" },
   { to: "/products", icon: BoxesIcon, label: "Products" },
   { to: "/inventory", icon: Package, label: "Inventory" },
   { to: "/credit", icon: Users, label: "Credit" },
+  { to: "/expenses", icon: Wallet, label: "Expenses" },
+  { to: "/daily-summary", icon: ClipboardList, label: "Daily Summary" },
   { to: "/reports", icon: BarChart3, label: "Reports" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
