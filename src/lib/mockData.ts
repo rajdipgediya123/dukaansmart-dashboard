@@ -112,3 +112,40 @@ export const lowStockAlerts = inventoryItems
     avgDailySales: Math.ceil(Math.random() * 5 + 2),
     suggestedReorder: Math.ceil(Math.random() * 20 + 10),
   }));
+
+// Profit analytics
+export const topProfitProducts = [
+  { name: "Fortune Oil 1L", profit: 20, margin: 13.3, sold: 65 },
+  { name: "Surf Excel 1kg", profit: 20, margin: 15.4, sold: 45 },
+  { name: "Colgate 200g", profit: 15, margin: 15.0, sold: 30 },
+  { name: "Brooke Bond Tea 250g", profit: 20, margin: 18.2, sold: 22 },
+  { name: "Amul Butter 500g", profit: 8, margin: 16.0, sold: 85 },
+];
+
+export const worstProducts = [
+  { name: "Parle-G Biscuit", profit: 2, margin: 20.0, sold: 200, totalProfit: 400 },
+  { name: "Tata Salt 1kg", profit: 2, margin: 10.0, sold: 120, totalProfit: 240 },
+];
+
+export const lastWeekSales = [
+  { day: "Mon", sales: 7200 },
+  { day: "Tue", sales: 10100 },
+  { day: "Wed", sales: 8500 },
+  { day: "Thu", sales: 13000 },
+  { day: "Fri", sales: 9800 },
+  { day: "Sat", sales: 16200 },
+  { day: "Sun", sales: 6500 },
+];
+
+export const thisWeekTotal = salesLast7Days.reduce((s, d) => s + d.sales, 0);
+export const lastWeekTotal = lastWeekSales.reduce((s, d) => s + d.sales, 0);
+export const weekGrowth = ((thisWeekTotal - lastWeekTotal) / lastWeekTotal * 100).toFixed(1);
+
+export const creditRecoveryRate = 72; // percentage
+
+export const smartSuggestions = [
+  { type: "trend" as const, message: "Butter selling fast this week — stock up!", icon: "📈" },
+  { type: "warning" as const, message: "Milk margin is only 7% — consider price increase", icon: "⚠️" },
+  { type: "alert" as const, message: "Customer Ramesh overdue by 5 days — ₹3,500 pending", icon: "🔴" },
+  { type: "trend" as const, message: "Weekend sales are 40% higher — plan stock accordingly", icon: "📊" },
+];

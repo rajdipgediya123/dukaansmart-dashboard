@@ -1,50 +1,105 @@
-import { IndianRupee, TrendingUp, AlertTriangle, CreditCard, Plus, Package, Users, BarChart3, Zap } from "lucide-react";
+import { IndianRupee, TrendingUp, AlertTriangle, CreditCard, Zap, Package, BarChart3, Lightbulb, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { dashboardStats, salesLast7Days, monthlyRevenue, topProducts, lowStockAlerts, expensesData, formatCurrency } from "@/lib/mockData";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  dashboardStats, salesLast7Days, topProfitProducts, worstProducts,
+  lowStockAlerts, expensesData, formatCurrency, smartSuggestions,
+  thisWeekTotal, lastWeekTotal, weekGrowth, creditRecoveryRate,
+} from "@/lib/mockData";
 import { useNavigate } from "react-router-dom";
 
 const totalExpenses = expensesData.reduce((s, e) => s + e.amount, 0);
-const realProfit = dashboardStats.todayProfit - Math.round(totalExpenses / 30);
-
-const statCards = [
-  { title: "Today's Sales", value: formatCurrency(dashboardStats.todaySales), icon: IndianRupee, color: "text-primary" },
-  { title: "Real Profit", value: formatCurrency(realProfit), icon: TrendingUp, color: "text-[hsl(var(--success))]", highlight: true },
-  { title: "Pending Credit", value: formatCurrency(dashboardStats.pendingCredit), icon: CreditCard, color: "text-[hsl(var(--warning))]" },
-  { title: "Low Stock Items", value: String(dashboardStats.lowStockItems), icon: AlertTriangle, color: "text-destructive" },
-];
-
-const quickActions = [
-  { label: "⚡ Fast Sale", icon: Zap, path: "/fast-sale", variant: "default" as const },
-  { label: "Add Sale", icon: Plus, path: "/sales", variant: "outline" as const },
-  { label: "Products", icon: Package, path: "/products", variant: "outline" as const },
-  { label: "Reports", icon: BarChart3, path: "/reports", variant: "outline" as const },
-];
+const dailyExpense = Math.round(totalExpenses / 30);
+const todayProfit = dashboardStats.todayProfit;
+const realProfit = todayProfit - dailyExpense;
+const monthlyNetProfit = dashboardStats.todayProfit * 30 - totalExpenses;
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const isGrowthPositive = Number(weekGrowth) >= 0;
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((stat) => (
-          <Card key={stat.title} className={stat.highlight ? "border-2 border-[hsl(var(--success))]" : ""}>
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className={`rounded-lg bg-accent p-3 ${stat.color}`}>
-                <stat.icon className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className="text-2xl font-bold">{stat.value}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Hero Profit Card */}
+      <Card className="border-2 border-success bg-success/5">
+        <CardContent className="flex items-center justify-between p-6">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">Today's Real Profit</p>
+            <p className="text-5xl font-black text-success tabular-nums">{formatCurrency(realProfit)}</p>
+            <p className="text-xs text-muted-foreground mt-1">Sales {formatCurrency(dashboardStats.todaySales)} − Expenses {formatCurrency(dailyExpense)}</p>
+          </div>
+          <div className="text-right space-y-1">
+            <div className="flex items-center gap-1 justify-end">
+              {isGrowthPositive ? <ArrowUpRight className="h-4 w-4 text-success" /> : <ArrowDownRight className="h-4 w-4 text-destructive" />}
+              <span className={`text-sm font-bold ${isGrowthPositive ? "text-success" : "text-destructive"}`}>{weekGrowth}% vs last week</span>
+            </div>
+            <p className="text-xs text-muted-foreground">Net Monthly: <span className="font-bold text-foreground">{formatCurrency(monthlyNetProfit)}</span></p>
+            <p className="text-xs text-muted-foreground">Credit Recovery: <span className="font-bold text-foreground">{creditRecoveryRate}%</span></p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Card>
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="rounded-lg bg-primary/10 p-3 text-primary"><IndianRupee className="h-6 w-6" /></div>
+            <div>
+              <p className="text-sm text-muted-foreground">Today's Sales</p>
+              <p className="text-2xl font-bold tabular-nums">{formatCurrency(dashboardStats.todaySales)}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="rounded-lg bg-warning/10 p-3 text-warning"><CreditCard className="h-6 w-6" /></div>
+            <div>
+              <p className="text-sm text-muted-foreground">Pending Credit</p>
+              <p className="text-2xl font-bold tabular-nums">{formatCurrency(dashboardStats.pendingCredit)}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="rounded-lg bg-destructive/10 p-3 text-destructive"><AlertTriangle className="h-6 w-6" /></div>
+            <div>
+              <p className="text-sm text-muted-foreground">Low Stock Items</p>
+              <p className="text-2xl font-bold tabular-nums">{dashboardStats.lowStockItems}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="rounded-lg bg-success/10 p-3 text-success"><TrendingUp className="h-6 w-6" /></div>
+            <div>
+              <p className="text-sm text-muted-foreground">This Week</p>
+              <p className="text-2xl font-bold tabular-nums">{formatCurrency(thisWeekTotal)}</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Smart Suggestions */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Lightbulb className="h-5 w-5 text-warning" /> Smart Suggestions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {smartSuggestions.map((s, i) => (
+              <div key={i} className={`flex items-start gap-3 rounded-lg border p-3 ${s.type === "alert" ? "border-destructive/30 bg-destructive/5" : s.type === "warning" ? "border-warning/30 bg-warning/5" : "border-primary/20 bg-primary/5"}`}>
+                <span className="text-xl shrink-0">{s.icon}</span>
+                <p className="text-sm font-medium">{s.message}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Low Stock Alerts */}
       {lowStockAlerts.length > 0 && (
@@ -74,9 +129,9 @@ const Dashboard = () => {
         </Card>
       )}
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
+      {/* Sales Chart + Quick Actions */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">Sales – Last 7 Days</CardTitle>
           </CardHeader>
@@ -86,7 +141,7 @@ const Dashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
                 <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }} formatter={(value: number) => [formatCurrency(value), "Sales"]} />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }} formatter={(v: number) => [formatCurrency(v), "Sales"]} />
                 <Bar dataKey="sales" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -95,60 +150,76 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Monthly Revenue & Profit</CardTitle>
+            <CardTitle className="text-base">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={monthlyRevenue}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }} formatter={(value: number) => formatCurrency(value)} />
-                <Area type="monotone" dataKey="revenue" fill="hsl(var(--primary) / 0.15)" stroke="hsl(var(--primary))" strokeWidth={2} />
-                <Area type="monotone" dataKey="profit" fill="hsl(var(--success) / 0.15)" stroke="hsl(var(--success))" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+          <CardContent className="grid grid-cols-2 gap-3">
+            <Button className="h-auto flex-col gap-2 py-5 text-base font-bold" onClick={() => navigate("/fast-sale")}>
+              <Zap className="h-6 w-6" />
+              <span>⚡ Fast Sale</span>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-5" onClick={() => navigate("/products")}>
+              <Package className="h-6 w-6" />
+              <span className="text-xs">Products</span>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-5" onClick={() => navigate("/credit")}>
+              <CreditCard className="h-6 w-6" />
+              <span className="text-xs">Credit</span>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-5" onClick={() => navigate("/reports")}>
+              <BarChart3 className="h-6 w-6" />
+              <span className="text-xs">Reports</span>
+            </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Quick Actions + Top Products */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      {/* Best + Worst Products */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            {quickActions.map((action) => (
-              <Button key={action.label} variant={action.variant} className="h-auto flex-col gap-2 py-4" onClick={() => navigate(action.path)}>
-                <action.icon className="h-5 w-5" />
-                <span className="text-xs">{action.label}</span>
-              </Button>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">Top Selling Products</CardTitle>
+            <CardTitle className="text-base text-success">🏆 Most Profitable Products</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead className="text-right">Sold</TableHead>
-                  <TableHead className="text-right">Revenue</TableHead>
+                  <TableHead className="text-right">Margin</TableHead>
+                  <TableHead className="text-right">Profit/unit</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {topProducts.map((product) => (
-                  <TableRow key={product.name}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{product.category}</TableCell>
-                    <TableCell className="text-right">{product.sold}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(product.revenue)}</TableCell>
+                {topProfitProducts.map((p) => (
+                  <TableRow key={p.name}>
+                    <TableCell className="font-medium">{p.name}</TableCell>
+                    <TableCell className="text-right text-success font-semibold">{p.margin}%</TableCell>
+                    <TableCell className="text-right">{formatCurrency(p.profit)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base text-warning">⚠️ Low Margin Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product</TableHead>
+                  <TableHead className="text-right">Margin</TableHead>
+                  <TableHead className="text-right">Total Profit</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {worstProducts.map((p) => (
+                  <TableRow key={p.name}>
+                    <TableCell className="font-medium">{p.name}</TableCell>
+                    <TableCell className="text-right text-warning font-semibold">{p.margin}%</TableCell>
+                    <TableCell className="text-right">{formatCurrency(p.totalProfit)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
